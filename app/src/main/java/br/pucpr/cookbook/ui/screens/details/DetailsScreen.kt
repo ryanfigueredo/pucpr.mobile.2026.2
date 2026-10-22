@@ -61,8 +61,8 @@ import br.pucpr.cookbook.ui.components.LoadingIndicator
 import br.pucpr.cookbook.ui.components.RecipeFormSheet
 import br.pucpr.cookbook.ui.components.RecipeImagePlaceholder
 import br.pucpr.cookbook.ui.components.categoryColor
+import br.pucpr.cookbook.ui.components.formatQuantidadeComUnidade
 import br.pucpr.cookbook.ui.theme.CookBookTheme
-import kotlin.math.roundToInt
 
 @Composable
 fun DetailsScreen(
@@ -275,7 +275,7 @@ private fun RecipeDetailsBody(
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
-                                "${formatQuantidade(quantidadeAjustada)} ${ingredient.unidade} de ${ingredient.nome}",
+                                "${formatQuantidadeComUnidade(quantidadeAjustada, ingredient.unidade)} de ${ingredient.nome}",
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                         }
@@ -322,9 +322,6 @@ private fun RecipeDetailsBody(
         }
     }
 }
-
-private fun formatQuantidade(valor: Double): String =
-    if (valor == valor.roundToInt().toDouble()) valor.roundToInt().toString() else String.format("%.1f", valor)
 
 @Preview(showBackground = true)
 @Composable

@@ -121,24 +121,26 @@ fun RecipeFormSheet(
                             onChange(formState.replaceIngredient(index, ingrediente.copy(nome = novo)))
                         },
                         label = { Text("Ingrediente") },
+                        singleLine = true,
                         modifier = Modifier.weight(2f),
                     )
                     OutlinedTextField(
                         value = ingrediente.quantidade,
                         onValueChange = { novo ->
-                            onChange(formState.replaceIngredient(index, ingrediente.copy(quantidade = novo)))
+                            val filtrado = novo.filter { c -> c.isDigit() || c == ',' || c == '.' }
+                            onChange(formState.replaceIngredient(index, ingrediente.copy(quantidade = filtrado)))
                         },
                         label = { Text("Qtd.") },
+                        singleLine = true,
                         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.weight(1f),
                     )
-                    OutlinedTextField(
+                    UnidadeDropdownField(
                         value = ingrediente.unidade,
                         onValueChange = { novo ->
                             onChange(formState.replaceIngredient(index, ingrediente.copy(unidade = novo)))
                         },
-                        label = { Text("Unid.") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1.2f),
                     )
                     IconButton(onClick = { onChange(formState.removeIngredient(index)) }) {
                         Icon(Icons.Filled.Close, contentDescription = "Remover ingrediente")

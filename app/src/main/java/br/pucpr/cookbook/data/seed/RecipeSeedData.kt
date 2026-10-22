@@ -18,11 +18,11 @@ object RecipeSeedData {
             porcoes = 4,
             ingredientes = listOf(
                 NewIngredient("Espaguete", 500.0, "g"),
-                NewIngredient("Tomate maduro", 6.0, "unidade"),
+                NewIngredient("Tomate maduro", 6.0, "un"),
                 NewIngredient("Alho", 3.0, "dente"),
-                NewIngredient("Cebola", 1.0, "unidade"),
+                NewIngredient("Cebola", 1.0, "un"),
                 NewIngredient("Manjericão fresco", 10.0, "folha"),
-                NewIngredient("Azeite de oliva", 3.0, "colher de sopa"),
+                NewIngredient("Azeite de oliva", 3.0, "colher (sopa)"),
             ),
             passos = listOf(
                 "Cozinhe o espaguete em água fervente com sal até ficar al dente.",
@@ -64,11 +64,11 @@ object RecipeSeedData {
             porcoes = 4,
             ingredientes = listOf(
                 NewIngredient("Carne bovina em cubos", 600.0, "g"),
-                NewIngredient("Cebola", 1.0, "unidade"),
-                NewIngredient("Tomate", 2.0, "unidade"),
-                NewIngredient("Pimentão", 1.0, "unidade"),
+                NewIngredient("Cebola", 1.0, "un"),
+                NewIngredient("Tomate", 2.0, "un"),
+                NewIngredient("Pimentão", 1.0, "un"),
                 NewIngredient("Alho", 2.0, "dente"),
-                NewIngredient("Batata", 3.0, "unidade"),
+                NewIngredient("Batata", 3.0, "un"),
             ),
             passos = listOf(
                 "Tempere a carne com sal, alho e pimenta.",
@@ -86,9 +86,9 @@ object RecipeSeedData {
             dificuldade = RecipeDifficulty.MEDIA,
             porcoes = 4,
             ingredientes = listOf(
-                NewIngredient("Bife bovino", 4.0, "unidade"),
+                NewIngredient("Bife bovino", 4.0, "un"),
                 NewIngredient("Farinha de trigo", 100.0, "g"),
-                NewIngredient("Ovo", 2.0, "unidade"),
+                NewIngredient("Ovo", 2.0, "un"),
                 NewIngredient("Farinha de rosca", 150.0, "g"),
                 NewIngredient("Molho de tomate", 400.0, "ml"),
                 NewIngredient("Queijo mussarela", 200.0, "g"),
@@ -109,11 +109,11 @@ object RecipeSeedData {
             dificuldade = RecipeDifficulty.FACIL,
             porcoes = 4,
             ingredientes = listOf(
-                NewIngredient("Sobrecoxa de frango", 8.0, "unidade"),
-                NewIngredient("Batata", 5.0, "unidade"),
+                NewIngredient("Sobrecoxa de frango", 8.0, "un"),
+                NewIngredient("Batata", 5.0, "un"),
                 NewIngredient("Alho", 4.0, "dente"),
                 NewIngredient("Alecrim", 2.0, "ramo"),
-                NewIngredient("Azeite de oliva", 2.0, "colher de sopa"),
+                NewIngredient("Azeite de oliva", 2.0, "colher (sopa)"),
             ),
             passos = listOf(
                 "Tempere o frango com sal, alho e alecrim.",
@@ -135,8 +135,8 @@ object RecipeSeedData {
                 NewIngredient("Champignon", 150.0, "g"),
                 NewIngredient("Creme de leite", 200.0, "g"),
                 NewIngredient("Molho de tomate", 150.0, "ml"),
-                NewIngredient("Cebola", 1.0, "unidade"),
-                NewIngredient("Ketchup", 2.0, "colher de sopa"),
+                NewIngredient("Cebola", 1.0, "un"),
+                NewIngredient("Ketchup", 2.0, "colher (sopa)"),
             ),
             passos = listOf(
                 "Corte o frango em cubos e tempere com sal e pimenta.",
@@ -156,10 +156,10 @@ object RecipeSeedData {
             ingredientes = listOf(
                 NewIngredient("Arroz arbóreo", 300.0, "g"),
                 NewIngredient("Cogumelo paris", 200.0, "g"),
-                NewIngredient("Caldo de legumes", 1.0, "litro"),
+                NewIngredient("Caldo de legumes", 1.0, "l"),
                 NewIngredient("Vinho branco", 100.0, "ml"),
                 NewIngredient("Queijo parmesão", 80.0, "g"),
-                NewIngredient("Cebola", 1.0, "unidade"),
+                NewIngredient("Cebola", 1.0, "un"),
             ),
             passos = listOf(
                 "Refogue a cebola picada até ficar translúcida.",
@@ -177,10 +177,10 @@ object RecipeSeedData {
             dificuldade = RecipeDifficulty.FACIL,
             porcoes = 2,
             ingredientes = listOf(
-                NewIngredient("Tomate", 3.0, "unidade"),
+                NewIngredient("Tomate", 3.0, "un"),
                 NewIngredient("Mussarela de búfala", 200.0, "g"),
                 NewIngredient("Manjericão fresco", 8.0, "folha"),
-                NewIngredient("Azeite de oliva", 2.0, "colher de sopa"),
+                NewIngredient("Azeite de oliva", 2.0, "colher (sopa)"),
                 NewIngredient("Sal", 1.0, "pitada"),
             ),
             passos = listOf(
@@ -199,8 +199,8 @@ object RecipeSeedData {
             porcoes = 20,
             ingredientes = listOf(
                 NewIngredient("Leite condensado", 1.0, "lata"),
-                NewIngredient("Chocolate em pó", 3.0, "colher de sopa"),
-                NewIngredient("Manteiga", 1.0, "colher de sopa"),
+                NewIngredient("Chocolate em pó", 3.0, "colher (sopa)"),
+                NewIngredient("Manteiga", 1.0, "colher (sopa)"),
                 NewIngredient("Granulado", 100.0, "g"),
             ),
             passos = listOf(
@@ -220,7 +220,7 @@ object RecipeSeedData {
             ingredientes = listOf(
                 NewIngredient("Leite condensado", 1.0, "lata"),
                 NewIngredient("Leite integral", 300.0, "ml"),
-                NewIngredient("Ovo", 3.0, "unidade"),
+                NewIngredient("Ovo", 3.0, "un"),
                 NewIngredient("Açúcar", 150.0, "g"),
             ),
             passos = listOf(
@@ -239,9 +239,9 @@ object RecipeSeedData {
             dificuldade = RecipeDifficulty.FACIL,
             porcoes = 2,
             ingredientes = listOf(
-                NewIngredient("Laranja", 4.0, "unidade"),
+                NewIngredient("Laranja", 4.0, "un"),
                 NewIngredient("Água", 200.0, "ml"),
-                NewIngredient("Açúcar", 1.0, "colher de sopa"),
+                NewIngredient("Açúcar", 1.0, "colher (sopa)"),
             ),
             passos = listOf(
                 "Esprema as laranjas para extrair o suco.",
@@ -257,10 +257,10 @@ object RecipeSeedData {
             dificuldade = RecipeDifficulty.FACIL,
             porcoes = 2,
             ingredientes = listOf(
-                NewIngredient("Banana", 2.0, "unidade"),
+                NewIngredient("Banana", 2.0, "un"),
                 NewIngredient("Leite integral", 300.0, "ml"),
-                NewIngredient("Aveia em flocos", 2.0, "colher de sopa"),
-                NewIngredient("Mel", 1.0, "colher de sopa"),
+                NewIngredient("Aveia em flocos", 2.0, "colher (sopa)"),
+                NewIngredient("Mel", 1.0, "colher (sopa)"),
             ),
             passos = listOf(
                 "Coloque a banana, o leite, a aveia e o mel no liquidificador.",

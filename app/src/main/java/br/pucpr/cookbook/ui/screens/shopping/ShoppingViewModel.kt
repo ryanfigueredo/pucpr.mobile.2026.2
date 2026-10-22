@@ -69,7 +69,7 @@ class ShoppingViewModel @Inject constructor(
     }
 
     fun onNovoItemQuantidadeChange(valor: String) {
-        _uiState.update { it.copy(novoItemQuantidade = valor.filter { c -> c.isDigit() || c == '.' }) }
+        _uiState.update { it.copy(novoItemQuantidade = valor.filter { c -> c.isDigit() || c == ',' || c == '.' }) }
     }
 
     fun onNovoItemUnidadeChange(valor: String) {
@@ -77,17 +77,26 @@ class ShoppingViewModel @Inject constructor(
     }
 
     fun onAddManualItem() {
+        // Marca a tentativa para a tela passar a exibir isError/supportingText nos campos inválidos.
+        _uiState.update { it.copy(tentouAdicionar = true) }
         val state = _uiState.value
-        val quantidade = state.novoItemQuantidade.toDoubleOrNull()
-        if (state.novoItemNome.isBlank() || quantidade == null || quantidade <= 0 || state.novoItemUnidade.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Informe nome, quantidade e unidade válidos.") }
-            return
-        }
+        val quantidade = state.novoItemQuantidadeValida
+        if (!state.podeAdicionarItem || quantidade == null) return
         viewModelScope.launch {
-            shoppingRepository.addItem(state.novoItemNome.trim(), quantidade, state.novoItemUnidade.trim())
-            _uiState.update { it.copy(novoItemNome = "", novoItemQuantidade = "", novoItemUnidade = "") }
+            shoppingRepository.addItem(state.novoItemNome.trim(), quantidade, state.novoItemUnidade)
+            // Unidade é mantida (última escolhida); nome e quantidade são limpos para o próximo item.
+            _uiState.update {
+                it.copy(
+                    novoItemNome = "",
+                    novoItemQuantidade = "",
+                    tentouAdicionar = false,
+                    snackbarMessage = "Item adicionado à lista.",
+                )
+            }
         }
     }
+
+    fun onSnackbarShown() = _uiState.update { it.copy(snackbarMessage = null) }
 
     fun onRequestClearBought() = _uiState.update { it.copy(showClearBoughtDialog = true) }
 

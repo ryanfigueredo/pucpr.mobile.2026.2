@@ -4,6 +4,14 @@ Trabalho acadêmico — app Android nativo de receitas culinárias. O usuário e
 
 Pacote: `br.pucpr.cookbook`
 
+## Equipe
+
+- Pedro Henrique Junqueira Colantonio
+- João Vitor Simão Ribas
+- Arthur Krauze de Paula
+- Lucas Cicarello Girata
+- Ryan D'Oliveira Lopes Figueredo
+
 ## Descrição
 
 O CookBook tem 5 telas principais, uma por integrante da equipe:
@@ -94,13 +102,11 @@ Regras seguidas no projeto:
 
 | Integrante | Tela | Conceito principal | Arquivos |
 |---|---|---|---|
-| Integrante 1 | Início + identidade visual | Compose/Material 3, tema | `ui/screens/home/*`, `ui/theme/*` |
-| Integrante 2 | Explorar, busca e filtros, cadastro de receita | Navigation Compose (argumentos opcionais), formulário com validação | `ui/screens/explore/*`, `ui/components/RecipeFormSheet.kt`, `ui/components/RecipeFormState.kt` |
-| Integrante 3 | Detalhes e ingredientes | Navigation (argumento obrigatório `recipeId`), `@Relation` do Room | `ui/screens/details/*` |
-| Integrante 4 | Favoritos e persistência com Room | Entity, DAO, Database, CRUD, Flow reativo | `ui/screens/favorites/*`, `data/local/*` |
-| Integrante 5 | Lista de compras, integração e Hilt | MVVM/StateFlow, `@Module`/`@Provides`/`@HiltViewModel` | `ui/screens/shopping/*`, `di/*`, `data/repository/*`, `data/seed/*`, `ui/navigation/*`, `MainActivity.kt`, `CookBookApplication.kt` |
-
-*(nomes dos integrantes a preencher pela equipe)*
+| Pedro Henrique Junqueira Colantonio | Início + identidade visual | Compose/Material 3, tema | `ui/screens/home/*`, `ui/theme/*` |
+| João Vitor Simão Ribas | Explorar, busca e filtros, cadastro de receita | Navigation Compose (argumentos opcionais), formulário com validação | `ui/screens/explore/*`, `ui/components/RecipeFormSheet.kt`, `ui/components/RecipeFormState.kt` |
+| Arthur Krauze de Paula | Detalhes e ingredientes | Navigation (argumento obrigatório `recipeId`), `@Relation` do Room | `ui/screens/details/*` |
+| Lucas Cicarello Girata | Favoritos e persistência com Room | Entity, DAO, Database, CRUD, Flow reativo | `ui/screens/favorites/*`, `data/local/*` |
+| Ryan D'Oliveira Lopes Figueredo | Lista de compras, integração e Hilt | MVVM/StateFlow, `@Module`/`@Provides`/`@HiltViewModel` | `ui/screens/shopping/*`, `di/*`, `data/repository/*`, `data/seed/*`, `ui/navigation/*`, `MainActivity.kt`, `CookBookApplication.kt` |
 
 ## Documentos complementares
 

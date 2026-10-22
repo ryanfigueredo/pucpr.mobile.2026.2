@@ -3,12 +3,13 @@ package br.pucpr.cookbook.ui.components
 import br.pucpr.cookbook.data.local.entity.RecipeCategory
 import br.pucpr.cookbook.data.local.entity.RecipeDifficulty
 import br.pucpr.cookbook.data.local.entity.RecipeEntity
+import br.pucpr.cookbook.data.model.UnidadeMedida
 import br.pucpr.cookbook.data.repository.NewIngredient
 
 data class IngredientDraft(
     val nome: String = "",
     val quantidade: String = "",
-    val unidade: String = "",
+    val unidade: String = UnidadeMedida.default.label,
 )
 
 /**
@@ -37,7 +38,7 @@ fun RecipeFormState.validate(): String? {
     if (porcoes.toIntOrNull() == null || porcoes.toInt() <= 0) return "Informe um número de porções válido."
     val ingredientesValidos = ingredientes.filter { it.nome.isNotBlank() }
     if (ingredientesValidos.isEmpty()) return "Adicione pelo menos um ingrediente."
-    if (ingredientesValidos.any { it.quantidade.toDoubleOrNull() == null || it.unidade.isBlank() }) {
+    if (ingredientesValidos.any { it.quantidadeAsDouble() == null || it.unidade.isBlank() }) {
         return "Informe quantidade e unidade válidas para cada ingrediente."
     }
     val passosValidos = passos.filter { it.isNotBlank() }
@@ -60,7 +61,10 @@ fun RecipeFormState.toRecipeEntity(criadaEm: Long): RecipeEntity = RecipeEntity(
 
 fun RecipeFormState.toNewIngredients(): List<NewIngredient> = ingredientes
     .filter { it.nome.isNotBlank() }
-    .map { NewIngredient(it.nome.trim(), it.quantidade.toDouble(), it.unidade.trim()) }
+    .map { NewIngredient(it.nome.trim(), it.quantidadeAsDouble() ?: 0.0, it.unidade.trim()) }
+
+/** Aceita vírgula ou ponto como separador decimal (padrão brasileiro ou de teclado numérico). */
+fun IngredientDraft.quantidadeAsDouble(): Double? = quantidade.replace(',', '.').toDoubleOrNull()
 
 fun RecipeEntity.toFormState(ingredientes: List<IngredientDraft>): RecipeFormState = RecipeFormState(
     recipeId = id,
