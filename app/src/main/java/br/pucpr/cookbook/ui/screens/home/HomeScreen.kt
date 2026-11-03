@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Kitchen
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +54,8 @@ fun HomeScreen(
     onSearch: (String) -> Unit,
     onOpenRecipe: (Long) -> Unit,
     onOpenCategory: (RecipeCategory) -> Unit,
+    onOpenPlanner: () -> Unit,
+    onOpenPantry: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     // A tela só fala com o ViewModel: coleta o StateFlow com collectAsStateWithLifecycle,
@@ -60,6 +66,8 @@ fun HomeScreen(
         onSearch = onSearch,
         onOpenRecipe = onOpenRecipe,
         onOpenCategory = onOpenCategory,
+        onOpenPlanner = onOpenPlanner,
+        onOpenPantry = onOpenPantry,
     )
 }
 
@@ -70,6 +78,8 @@ private fun HomeScreenContent(
     onSearch: (String) -> Unit,
     onOpenRecipe: (Long) -> Unit,
     onOpenCategory: (RecipeCategory) -> Unit,
+    onOpenPlanner: () -> Unit,
+    onOpenPantry: () -> Unit,
 ) {
     var termoBusca by rememberSaveable { mutableStateOf("") }
 
@@ -134,6 +144,23 @@ private fun HomeScreenContent(
                 )
             }
             item {
+                SectionTitle("Minha cozinha")
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedCard(onClick = onOpenPlanner, modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.Filled.CalendarMonth, contentDescription = null)
+                            Text("Planejamento semanal", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
+                    OutlinedCard(onClick = onOpenPantry, modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.Filled.Kitchen, contentDescription = null)
+                            Text("Minha despensa", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
+                }
+            }
+            item {
                 SectionTitle("Categorias")
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(uiState.categorias) { categoria ->
@@ -195,6 +222,8 @@ private fun HomeScreenPreview() {
             onSearch = {},
             onOpenRecipe = {},
             onOpenCategory = {},
+            onOpenPlanner = {},
+            onOpenPantry = {},
         )
     }
 }

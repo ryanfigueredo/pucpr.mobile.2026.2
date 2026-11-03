@@ -1,6 +1,7 @@
 package br.pucpr.cookbook.data.local
 
 import androidx.room.TypeConverter
+import br.pucpr.cookbook.data.local.entity.MealType
 import br.pucpr.cookbook.data.local.entity.RecipeCategory
 import br.pucpr.cookbook.data.local.entity.RecipeDifficulty
 
@@ -12,6 +13,12 @@ private const val STEP_SEPARATOR = "|||"
  * categoria/dificuldade) para texto e de volta.
  */
 class Converters {
+
+    @TypeConverter
+    fun fromMealType(tipo: MealType): String = tipo.name
+
+    @TypeConverter
+    fun toMealType(raw: String): MealType = MealType.valueOf(raw)
 
     @TypeConverter
     fun fromStepList(steps: List<String>): String = steps.joinToString(STEP_SEPARATOR)

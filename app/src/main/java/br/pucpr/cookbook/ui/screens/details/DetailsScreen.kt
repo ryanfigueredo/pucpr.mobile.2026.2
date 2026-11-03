@@ -160,7 +160,7 @@ private fun DetailsScreenContent(
         if (uiState.showDeleteDialog) {
             ConfirmDialog(
                 title = "Excluir receita",
-                message = "Tem certeza que deseja excluir \"${uiState.recipe?.nome}\"? Essa ação não pode ser desfeita.",
+                message = "Tem certeza que deseja excluir \"${uiState.recipe?.nome}\"? As refeições planejadas com esta receita também serão removidas. Essa ação não pode ser desfeita.",
                 confirmLabel = "Excluir",
                 onConfirm = onConfirmDelete,
                 onDismiss = onDismissDeleteDialog,

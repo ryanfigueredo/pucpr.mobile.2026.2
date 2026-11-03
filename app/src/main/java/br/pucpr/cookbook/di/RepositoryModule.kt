@@ -1,7 +1,13 @@
 package br.pucpr.cookbook.di
 
+import br.pucpr.cookbook.data.local.dao.PantryDao
+import br.pucpr.cookbook.data.local.dao.PlannerDao
 import br.pucpr.cookbook.data.local.dao.RecipeDao
 import br.pucpr.cookbook.data.local.dao.ShoppingDao
+import br.pucpr.cookbook.data.repository.PantryRepository
+import br.pucpr.cookbook.data.repository.PantryRepositoryImpl
+import br.pucpr.cookbook.data.repository.PlannerRepository
+import br.pucpr.cookbook.data.repository.PlannerRepositoryImpl
 import br.pucpr.cookbook.data.repository.RecipeRepository
 import br.pucpr.cookbook.data.repository.RecipeRepositoryImpl
 import br.pucpr.cookbook.data.repository.ShoppingRepository
@@ -27,4 +33,14 @@ object RepositoryModule {
     @Singleton
     fun provideShoppingRepository(shoppingDao: ShoppingDao): ShoppingRepository =
         ShoppingRepositoryImpl(shoppingDao)
+
+    @Provides
+    @Singleton
+    fun providePlannerRepository(plannerDao: PlannerDao): PlannerRepository =
+        PlannerRepositoryImpl(plannerDao)
+
+    @Provides
+    @Singleton
+    fun providePantryRepository(pantryDao: PantryDao): PantryRepository =
+        PantryRepositoryImpl(pantryDao)
 }

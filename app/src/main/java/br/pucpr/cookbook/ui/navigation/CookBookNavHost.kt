@@ -27,6 +27,8 @@ import br.pucpr.cookbook.ui.screens.details.DetailsScreen
 import br.pucpr.cookbook.ui.screens.explore.ExploreScreen
 import br.pucpr.cookbook.ui.screens.favorites.FavoritesScreen
 import br.pucpr.cookbook.ui.screens.home.HomeScreen
+import br.pucpr.cookbook.ui.screens.pantry.PantryScreen
+import br.pucpr.cookbook.ui.screens.planner.PlannerScreen
 import br.pucpr.cookbook.ui.screens.shopping.ShoppingScreen
 
 private data class BottomDestination(val route: String, val label: String, val icon: ImageVector)
@@ -80,6 +82,8 @@ fun CookBookNavHost(navController: NavHostController = rememberNavController()) 
                     onSearch = { termo -> navController.navigate(Routes.exploreWithTerm(termo)) },
                     onOpenRecipe = { id -> navController.navigate(Routes.details(id)) },
                     onOpenCategory = { categoria -> navController.navigate(Routes.exploreWithCategory(categoria.name)) },
+                    onOpenPlanner = { navController.navigate(Routes.PLANNER) },
+                    onOpenPantry = { navController.navigate(Routes.PANTRY_BASE) },
                 )
             }
             // EXPLORE declara os argumentos opcionais "termo" e "categoria": a rota é a
@@ -121,7 +125,22 @@ fun CookBookNavHost(navController: NavHostController = rememberNavController()) 
                 )
             }
             composable(Routes.SHOPPING) {
-                ShoppingScreen()
+                ShoppingScreen(onAddToPantry = { id -> navController.navigate(Routes.pantryFromShopping(id)) })
+            }
+            composable(Routes.PLANNER) {
+                PlannerScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenRecipe = { id -> navController.navigate(Routes.details(id)) },
+                )
+            }
+            composable(
+                route = Routes.PANTRY,
+                arguments = listOf(navArgument("shoppingItemId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                }),
+            ) {
+                PantryScreen(onBack = { navController.popBackStack() })
             }
         }
     }
