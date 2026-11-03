@@ -12,6 +12,11 @@ object Routes {
     const val DETAILS = "details/{recipeId}"
     const val FAVORITES = "favorites"
     const val SHOPPING = "shopping"
+    const val PLANNER = "planner"
+    const val PANTRY_BASE = "pantry"
+    const val PANTRY = "$PANTRY_BASE?shoppingItemId={shoppingItemId}"
+
+    fun pantryFromShopping(itemId: Long): String = "$PANTRY_BASE?shoppingItemId=$itemId"
 
     fun exploreWithTerm(termo: String): String = "$EXPLORE_BASE?termo=$termo"
     fun exploreWithCategory(categoria: String): String = "$EXPLORE_BASE?categoria=$categoria"

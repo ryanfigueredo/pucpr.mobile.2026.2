@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -62,12 +63,16 @@ import br.pucpr.cookbook.ui.components.formatQuantidadeComUnidade
 import br.pucpr.cookbook.ui.theme.CookBookTheme
 
 @Composable
-fun ShoppingScreen(viewModel: ShoppingViewModel = hiltViewModel()) {
+fun ShoppingScreen(
+    onAddToPantry: (Long) -> Unit,
+    viewModel: ShoppingViewModel = hiltViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ShoppingScreenContent(
         uiState = uiState,
         onToggleComprado = viewModel::onToggleComprado,
         onDeleteItem = viewModel::onDeleteItem,
+        onAddToPantry = onAddToPantry,
         onNovoItemNomeChange = viewModel::onNovoItemNomeChange,
         onNovoItemQuantidadeChange = viewModel::onNovoItemQuantidadeChange,
         onNovoItemUnidadeChange = viewModel::onNovoItemUnidadeChange,
@@ -89,6 +94,7 @@ private fun ShoppingScreenContent(
     uiState: ShoppingUiState,
     onToggleComprado: (ShoppingItemEntity) -> Unit,
     onDeleteItem: (ShoppingItemEntity) -> Unit,
+    onAddToPantry: (Long) -> Unit,
     onNovoItemNomeChange: (String) -> Unit,
     onNovoItemQuantidadeChange: (String) -> Unit,
     onNovoItemUnidadeChange: (String) -> Unit,
@@ -165,7 +171,12 @@ private fun ShoppingScreenContent(
                             )
                         }
                         items(grupo.itens, key = { it.id }) { item ->
-                            ShoppingItemRow(item = item, onToggleComprado = onToggleComprado, onDeleteItem = onDeleteItem)
+                            ShoppingItemRow(
+                                item = item,
+                                onToggleComprado = onToggleComprado,
+                                onDeleteItem = onDeleteItem,
+                                onAddToPantry = onAddToPantry,
+                            )
                         }
                     }
                 }
@@ -286,6 +297,7 @@ private fun ShoppingItemRow(
     item: ShoppingItemEntity,
     onToggleComprado: (ShoppingItemEntity) -> Unit,
     onDeleteItem: (ShoppingItemEntity) -> Unit,
+    onAddToPantry: (Long) -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -314,6 +326,11 @@ private fun ShoppingItemRow(
                 },
                 color = if (item.comprado) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
             )
+            if (item.comprado) {
+                IconButton(onClick = { onAddToPantry(item.id) }) {
+                    Icon(Icons.Filled.Kitchen, contentDescription = "Adicionar ${item.nome} à despensa")
+                }
+            }
             IconButton(onClick = { onDeleteItem(item) }) {
                 Icon(Icons.Filled.Delete, contentDescription = "Excluir item")
             }
@@ -329,6 +346,7 @@ private fun ShoppingScreenPreview() {
             uiState = ShoppingUiState(isLoading = false),
             onToggleComprado = {},
             onDeleteItem = {},
+            onAddToPantry = {},
             onNovoItemNomeChange = {},
             onNovoItemQuantidadeChange = {},
             onNovoItemUnidadeChange = {},
