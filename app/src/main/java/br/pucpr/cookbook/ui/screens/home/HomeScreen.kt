@@ -21,6 +21,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.CollectionsBookmark
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,6 +60,8 @@ fun HomeScreen(
     onOpenCategory: (RecipeCategory) -> Unit,
     onOpenPlanner: () -> Unit,
     onOpenPantry: () -> Unit,
+    onOpenCollections: () -> Unit,
+    onOpenJournal: () -> Unit,
     onLogout: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
     sessionViewModel: SessionViewModel = hiltViewModel(),
@@ -72,6 +76,8 @@ fun HomeScreen(
         onOpenCategory = onOpenCategory,
         onOpenPlanner = onOpenPlanner,
         onOpenPantry = onOpenPantry,
+        onOpenCollections = onOpenCollections,
+        onOpenJournal = onOpenJournal,
         // Encerra a sessão no Firebase antes de voltar para a tela de login.
         onLogout = {
             sessionViewModel.logout()
@@ -89,6 +95,8 @@ private fun HomeScreenContent(
     onOpenCategory: (RecipeCategory) -> Unit,
     onOpenPlanner: () -> Unit,
     onOpenPantry: () -> Unit,
+    onOpenCollections: () -> Unit,
+    onOpenJournal: () -> Unit,
     onLogout: () -> Unit,
 ) {
     var termoBusca by rememberSaveable { mutableStateOf("") }
@@ -178,6 +186,20 @@ private fun HomeScreenContent(
                         }
                     }
                 }
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 12.dp)) {
+                    OutlinedCard(onClick = onOpenCollections, modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.Filled.CollectionsBookmark, contentDescription = null)
+                            Text("Minhas coleções", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
+                    OutlinedCard(onClick = onOpenJournal, modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null)
+                            Text("Diário culinário", style = MaterialTheme.typography.titleSmall)
+                        }
+                    }
+                }
             }
             item {
                 SectionTitle("Categorias")
@@ -243,6 +265,8 @@ private fun HomeScreenPreview() {
             onOpenCategory = {},
             onOpenPlanner = {},
             onOpenPantry = {},
+            onOpenCollections = {},
+            onOpenJournal = {},
             onLogout = {},
         )
     }

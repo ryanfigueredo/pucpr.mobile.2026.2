@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import br.pucpr.cookbook.data.local.AppDatabase
 import br.pucpr.cookbook.data.local.MIGRATION_1_2
+import br.pucpr.cookbook.data.local.MIGRATION_2_3
+import br.pucpr.cookbook.data.local.dao.CollectionDao
+import br.pucpr.cookbook.data.local.dao.JournalDao
 import br.pucpr.cookbook.data.local.dao.PantryDao
 import br.pucpr.cookbook.data.local.dao.PlannerDao
 import br.pucpr.cookbook.data.local.dao.RecipeDao
@@ -24,7 +27,7 @@ object DatabaseModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "cookbook.db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
 
     @Provides
@@ -38,4 +41,7 @@ object DatabaseModule {
 
     @Provides
     fun providePantryDao(database: AppDatabase): PantryDao = database.pantryDao()
+
+    @Provides fun provideCollectionDao(database: AppDatabase): CollectionDao = database.collectionDao()
+    @Provides fun provideJournalDao(database: AppDatabase): JournalDao = database.journalDao()
 }

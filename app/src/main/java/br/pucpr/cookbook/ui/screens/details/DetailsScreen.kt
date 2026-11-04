@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
@@ -67,6 +68,7 @@ import br.pucpr.cookbook.ui.theme.CookBookTheme
 @Composable
 fun DetailsScreen(
     onBack: () -> Unit,
+    onStartCooking: (recipeId: Long, porcoes: Int) -> Unit,
     viewModel: DetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -78,6 +80,7 @@ fun DetailsScreen(
     DetailsScreenContent(
         uiState = uiState,
         onBack = onBack,
+        onStartCooking = onStartCooking,
         onAdjustPortions = viewModel::onAdjustPortions,
         onToggleFavorite = viewModel::onToggleFavorite,
         onAddToShoppingList = viewModel::onAddToShoppingList,
@@ -98,6 +101,7 @@ fun DetailsScreen(
 private fun DetailsScreenContent(
     uiState: DetailsUiState,
     onBack: () -> Unit,
+    onStartCooking: (Long, Int) -> Unit,
     onAdjustPortions: (Int) -> Unit,
     onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
@@ -154,6 +158,7 @@ private fun DetailsScreenContent(
                 onAdjustPortions = onAdjustPortions,
                 onToggleFavorite = onToggleFavorite,
                 onAddToShoppingList = onAddToShoppingList,
+                onStartCooking = onStartCooking,
             )
         }
 
@@ -187,6 +192,7 @@ private fun RecipeDetailsBody(
     onAdjustPortions: (Int) -> Unit,
     onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
+    onStartCooking: (Long, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val fator = porcoesAjustadas.toDouble() / recipe.porcoes.toDouble()
@@ -284,6 +290,18 @@ private fun RecipeDetailsBody(
             }
         }
         item {
+            // Leva as porções ajustadas para o Modo Cozinha; a receita no banco não é alterada.
+            Button(
+                onClick = { onStartCooking(recipe.id, porcoesAjustadas) },
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Começar a cozinhar")
+            }
+        }
+        item {
             Button(
                 onClick = onAddToShoppingList,
                 modifier = Modifier.fillMaxWidth().height(52.dp),
@@ -349,6 +367,7 @@ private fun DetailsScreenPreview() {
                 porcoesAjustadas = 4,
             ),
             onBack = {},
+            onStartCooking = { _, _ -> },
             onAdjustPortions = {},
             onToggleFavorite = {},
             onAddToShoppingList = {},

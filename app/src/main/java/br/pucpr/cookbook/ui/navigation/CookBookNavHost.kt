@@ -23,10 +23,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import br.pucpr.cookbook.ui.screens.collections.CollectionsScreen
+import br.pucpr.cookbook.ui.screens.cooking.CookingModeScreen
 import br.pucpr.cookbook.ui.screens.details.DetailsScreen
 import br.pucpr.cookbook.ui.screens.explore.ExploreScreen
 import br.pucpr.cookbook.ui.screens.favorites.FavoritesScreen
 import br.pucpr.cookbook.ui.screens.home.HomeScreen
+import br.pucpr.cookbook.ui.screens.journal.JournalScreen
 import br.pucpr.cookbook.ui.screens.login.LoginScreen
 import br.pucpr.cookbook.ui.screens.pantry.PantryScreen
 import br.pucpr.cookbook.ui.screens.planner.PlannerScreen
@@ -100,6 +103,8 @@ fun CookBookNavHost(
                     onOpenCategory = { categoria -> navController.navigate(Routes.exploreWithCategory(categoria.name)) },
                     onOpenPlanner = { navController.navigate(Routes.PLANNER) },
                     onOpenPantry = { navController.navigate(Routes.PANTRY_BASE) },
+                    onOpenCollections = { navController.navigate(Routes.COLLECTIONS) },
+                    onOpenJournal = { navController.navigate(Routes.JOURNAL_BASE) },
                     onLogout = {
                         navController.navigate(Routes.LOGIN) {
                             popUpTo(0) { inclusive = true }
@@ -132,7 +137,31 @@ fun CookBookNavHost(
                 route = Routes.DETAILS,
                 arguments = listOf(navArgument("recipeId") { type = NavType.LongType }),
             ) {
-                DetailsScreen(onBack = { navController.popBackStack() })
+                DetailsScreen(
+                    onBack = { navController.popBackStack() },
+                    onStartCooking = { recipeId, porcoes ->
+                        // launchSingleTop evita empilhar duas telas iguais num toque duplo.
+                        navController.navigate(Routes.cooking(recipeId, porcoes)) { launchSingleTop = true }
+                    },
+                )
+            }
+            // Modo Cozinha: recipeId obrigatório e porcoes opcional (0 = porções da receita),
+            // ambos lidos pelo CookingModeViewModel via SavedStateHandle.
+            composable(
+                route = Routes.COOKING,
+                arguments = listOf(
+                    navArgument("recipeId") { type = NavType.LongType },
+                    navArgument("porcoes") {
+                        type = NavType.IntType
+                        defaultValue = 0
+                    },
+                ),
+            ) {
+                CookingModeScreen(
+                    onBack = { navController.popBackStack() },
+                    onGoHome = { navController.popBackStack(Routes.HOME, inclusive = false) },
+                    onRegister = { id, porcoes -> navController.navigate(Routes.journalFromCooking(id, porcoes)) },
+                )
             }
             composable(Routes.FAVORITES) {
                 FavoritesScreen(
@@ -148,6 +177,21 @@ fun CookBookNavHost(
             }
             composable(Routes.SHOPPING) {
                 ShoppingScreen(onAddToPantry = { id -> navController.navigate(Routes.pantryFromShopping(id)) })
+            }
+            composable(Routes.COLLECTIONS) {
+                CollectionsScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenRecipe = { id -> navController.navigate(Routes.details(id)) },
+                )
+            }
+            composable(
+                route = Routes.JOURNAL,
+                arguments = listOf(
+                    navArgument("recipeId") { type = NavType.LongType; defaultValue = 0L },
+                    navArgument("porcoes") { type = NavType.IntType; defaultValue = 0 },
+                ),
+            ) {
+                JournalScreen(onBack = { navController.popBackStack() })
             }
             composable(Routes.PLANNER) {
                 PlannerScreen(
