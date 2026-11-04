@@ -1,6 +1,13 @@
 package br.pucpr.cookbook.di
 
+import br.pucpr.cookbook.data.local.AppDatabase
+import br.pucpr.cookbook.data.local.dao.CollectionDao
+import br.pucpr.cookbook.data.local.dao.JournalDao
 import br.pucpr.cookbook.data.local.dao.PantryDao
+import br.pucpr.cookbook.data.repository.CollectionRepository
+import br.pucpr.cookbook.data.repository.CollectionRepositoryImpl
+import br.pucpr.cookbook.data.repository.JournalRepository
+import br.pucpr.cookbook.data.repository.JournalRepositoryImpl
 import br.pucpr.cookbook.data.local.dao.PlannerDao
 import br.pucpr.cookbook.data.local.dao.RecipeDao
 import br.pucpr.cookbook.data.local.dao.ShoppingDao
@@ -43,4 +50,7 @@ object RepositoryModule {
     @Singleton
     fun providePantryRepository(pantryDao: PantryDao): PantryRepository =
         PantryRepositoryImpl(pantryDao)
+
+    @Provides @Singleton fun provideCollectionRepository(dao: CollectionDao, db: AppDatabase): CollectionRepository = CollectionRepositoryImpl(dao, db)
+    @Provides @Singleton fun provideJournalRepository(dao: JournalDao): JournalRepository = JournalRepositoryImpl(dao)
 }
