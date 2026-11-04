@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import br.pucpr.cookbook.ui.screens.cooking.CookingModeScreen
 import br.pucpr.cookbook.ui.screens.details.DetailsScreen
 import br.pucpr.cookbook.ui.screens.explore.ExploreScreen
 import br.pucpr.cookbook.ui.screens.favorites.FavoritesScreen
@@ -110,7 +111,30 @@ fun CookBookNavHost(navController: NavHostController = rememberNavController()) 
                 route = Routes.DETAILS,
                 arguments = listOf(navArgument("recipeId") { type = NavType.LongType }),
             ) {
-                DetailsScreen(onBack = { navController.popBackStack() })
+                DetailsScreen(
+                    onBack = { navController.popBackStack() },
+                    onStartCooking = { recipeId, porcoes ->
+                        // launchSingleTop evita empilhar duas telas iguais num toque duplo.
+                        navController.navigate(Routes.cooking(recipeId, porcoes)) { launchSingleTop = true }
+                    },
+                )
+            }
+            // Modo Cozinha: recipeId obrigatório e porcoes opcional (0 = porções da receita),
+            // ambos lidos pelo CookingModeViewModel via SavedStateHandle.
+            composable(
+                route = Routes.COOKING,
+                arguments = listOf(
+                    navArgument("recipeId") { type = NavType.LongType },
+                    navArgument("porcoes") {
+                        type = NavType.IntType
+                        defaultValue = 0
+                    },
+                ),
+            ) {
+                CookingModeScreen(
+                    onBack = { navController.popBackStack() },
+                    onGoHome = { navController.popBackStack(Routes.HOME, inclusive = false) },
+                )
             }
             composable(Routes.FAVORITES) {
                 FavoritesScreen(
