@@ -27,6 +27,7 @@ import br.pucpr.cookbook.ui.screens.details.DetailsScreen
 import br.pucpr.cookbook.ui.screens.explore.ExploreScreen
 import br.pucpr.cookbook.ui.screens.favorites.FavoritesScreen
 import br.pucpr.cookbook.ui.screens.home.HomeScreen
+import br.pucpr.cookbook.ui.screens.login.LoginScreen
 import br.pucpr.cookbook.ui.screens.pantry.PantryScreen
 import br.pucpr.cookbook.ui.screens.planner.PlannerScreen
 import br.pucpr.cookbook.ui.screens.shopping.ShoppingScreen
@@ -41,7 +42,10 @@ private val bottomDestinations = listOf(
 )
 
 @Composable
-fun CookBookNavHost(navController: NavHostController = rememberNavController()) {
+fun CookBookNavHost(
+    startDestination: String = Routes.LOGIN,
+    navController: NavHostController = rememberNavController(),
+) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
     val showBottomBar = bottomDestinations.any { it.route == currentRoute }
@@ -74,9 +78,21 @@ fun CookBookNavHost(navController: NavHostController = rememberNavController()) 
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.HOME,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding),
         ) {
+            // LOGIN é a porta de entrada quando não há sessão. Ao autenticar,
+            // substitui a si mesmo na backstack para o usuário não "voltar" ao login.
+            composable(Routes.LOGIN) {
+                LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
+                )
+            }
             composable(Routes.HOME) {
                 HomeScreen(
                     onSearch = { termo -> navController.navigate(Routes.exploreWithTerm(termo)) },
@@ -84,6 +100,12 @@ fun CookBookNavHost(navController: NavHostController = rememberNavController()) 
                     onOpenCategory = { categoria -> navController.navigate(Routes.exploreWithCategory(categoria.name)) },
                     onOpenPlanner = { navController.navigate(Routes.PLANNER) },
                     onOpenPantry = { navController.navigate(Routes.PANTRY_BASE) },
+                    onLogout = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
             // EXPLORE declara os argumentos opcionais "termo" e "categoria": a rota é a

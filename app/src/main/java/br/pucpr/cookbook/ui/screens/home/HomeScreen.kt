@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Kitchen
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ import br.pucpr.cookbook.data.local.entity.RecipeEntity
 import br.pucpr.cookbook.ui.components.CategoryFilterChip
 import br.pucpr.cookbook.ui.components.LoadingIndicator
 import br.pucpr.cookbook.ui.components.RecipeCard
+import br.pucpr.cookbook.ui.screens.login.SessionViewModel
 import br.pucpr.cookbook.ui.theme.CookBookTheme
 
 @Composable
@@ -56,7 +58,9 @@ fun HomeScreen(
     onOpenCategory: (RecipeCategory) -> Unit,
     onOpenPlanner: () -> Unit,
     onOpenPantry: () -> Unit,
+    onLogout: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
     // A tela só fala com o ViewModel: coleta o StateFlow com collectAsStateWithLifecycle,
     // nunca acessa o Repository ou o Room diretamente.
@@ -68,6 +72,11 @@ fun HomeScreen(
         onOpenCategory = onOpenCategory,
         onOpenPlanner = onOpenPlanner,
         onOpenPantry = onOpenPantry,
+        // Encerra a sessão no Firebase antes de voltar para a tela de login.
+        onLogout = {
+            sessionViewModel.logout()
+            onLogout()
+        },
     )
 }
 
@@ -80,6 +89,7 @@ private fun HomeScreenContent(
     onOpenCategory: (RecipeCategory) -> Unit,
     onOpenPlanner: () -> Unit,
     onOpenPantry: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     var termoBusca by rememberSaveable { mutableStateOf("") }
 
@@ -98,18 +108,27 @@ private fun HomeScreenContent(
                     )
                     .padding(horizontal = 20.dp, vertical = 28.dp),
             ) {
-                Column {
-                    Text(
-                        "Olá, chef!",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                    Text(
-                        "O que vamos cozinhar hoje?",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                    )
+                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Olá, chef!",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                        Text(
+                            "O que vamos cozinhar hoje?",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                        )
+                    }
+                    IconButton(onClick = onLogout) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Sair",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
                 }
             }
         },
@@ -224,6 +243,7 @@ private fun HomeScreenPreview() {
             onOpenCategory = {},
             onOpenPlanner = {},
             onOpenPantry = {},
+            onLogout = {},
         )
     }
 }

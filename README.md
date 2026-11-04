@@ -55,7 +55,19 @@ Todos os dados (receitas, ingredientes, lista de compras) são persistidos local
    ```
 4. Na primeira abertura, o app detecta o banco Room vazio e insere automaticamente 12 receitas de exemplo (ver `data/seed/RecipeSeedData.kt` e `data/seed/DatabaseSeeder.kt`).
 
-Não é necessário nenhum serviço externo ou chave de API — o app roda localmente. O primeiro build precisa de internet para baixar o Gradle e as dependências.
+O primeiro build precisa de internet para baixar o Gradle e as dependências. Os dados do app (receitas, compras, despensa) continuam locais no Room; apenas o **login usa o Firebase Authentication** (ver abaixo).
+
+## Autenticação (Firebase)
+
+A tela de **Login** usa Firebase Authentication (e-mail/senha). É possível criar conta, entrar e sair; a sessão fica salva entre aberturas do app. Ao abrir, se já houver usuário logado o app vai direto para a Início.
+
+O arquivo `app/google-services.json` **não está no repositório** (contém as chaves do projeto Firebase e está no `.gitignore`). Para compilar, cada integrante precisa baixar o seu:
+
+1. Firebase Console → projeto **av2pucpr-mobile** → ⚙️ Configurações do projeto.
+2. Em "Seus apps", selecione o app Android `br.pucpr.cookbook` e baixe o `google-services.json`.
+3. Coloque o arquivo em `app/google-services.json`.
+
+O provedor **E-mail/senha** já está habilitado no console (Authentication → Método de login).
 
 ### Validação pelo terminal
 

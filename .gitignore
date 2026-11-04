@@ -10,6 +10,9 @@ build/
 .kotlin/
 local.properties
 
+# Firebase: contém as chaves do projeto. Cada dev baixa o seu no Firebase Console.
+google-services.json
+
 # Documentação em Markdown (exceto README.md)
 *.md
 !README.md

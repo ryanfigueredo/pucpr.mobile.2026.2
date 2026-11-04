@@ -6,6 +6,7 @@ package br.pucpr.cookbook.ui.navigation
  * ViewModel de cada tela via SavedStateHandle.
  */
 object Routes {
+    const val LOGIN = "login"
     const val HOME = "home"
     const val EXPLORE_BASE = "explore"
     const val EXPLORE = "$EXPLORE_BASE?termo={termo}&categoria={categoria}"
