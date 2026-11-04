@@ -14,7 +14,7 @@ Pacote: `br.pucpr.cookbook`
 
 ## Descrição
 
-O CookBook tem 8 telas. As cinco originais continuam com a divisão da equipe:
+O CookBook tem 10 telas. As cinco originais continuam com a divisão da equipe:
 
 1. **Início** — busca, categorias, destaques e receitas recentes.
 2. **Explorar Receitas** — listagem completa com busca e filtros, cadastro de novas receitas.
@@ -24,12 +24,14 @@ O CookBook tem 8 telas. As cinco originais continuam com a divisão da equipe:
 6. **Planejamento semanal** — CRUD de refeições com receita, data, tipo e porções; navegação entre semanas, acesso à receita e envio de ingredientes para compras com as quantidades ajustadas.
 7. **Minha despensa** — CRUD de alimentos com nome, quantidade, unidade e validade opcional; busca e filtro de vencidos ou que vencem nos próximos 7 dias.
 8. **Modo Cozinha** — preparo de receitas passo a passo, navegação entre etapas, barra de progresso, temporizador, consulta de ingredientes, ajuste de porções e finalização da receita.
+9. **Minhas coleções** — CRUD de coleções com nome, descrição e seleção de receitas; cada receita pode ser aberta pela coleção.
+10. **Diário culinário** — CRUD de preparos com receita, data, porções, nota e observações; filtro por receita e atalho ao concluir o Modo Cozinha.
 
 As novas telas são acessadas pelos atalhos em **Início → Minha cozinha**, mantendo a barra inferior atual. Cadastro e edição usam painéis (`ModalBottomSheet`), seguindo o formulário de receitas. Excluir uma receita remove também suas refeições planejadas. Os alimentos da despensa são independentes das receitas.
 
 Ao adicionar um item comprado à despensa, o app abre um formulário preenchido para conferir quantidade e validade. Nada é salvo até tocar em **Salvar**, e o item continua na lista de compras. Alimentos com o mesmo nome podem ter registros separados para representar lotes com validades diferentes. O planejamento envia os ingredientes da refeição selecionada; não desconta automaticamente o estoque.
 
-Todos os dados (receitas, ingredientes, lista de compras) são persistidos localmente com Room — não há backend nem dependência de internet. Na primeira execução, o banco é populado com 12 receitas reais em português (2 por categoria).
+Todos os dados (receitas, ingredientes, lista de compras, planejamento, despensa, coleções e diário) são persistidos localmente com Room — não há backend nem dependência de internet. Na primeira execução, o banco é populado com 12 receitas reais em português (2 por categoria).
 
 ## Stack
 
@@ -64,7 +66,7 @@ Não é necessário nenhum serviço externo ou chave de API — o app roda local
 ./gradlew assembleDebug testDebugUnitTest lintDebug
 ```
 
-Os testes locais usam JUnit, Robolectric e Coroutines Test, sem emulador. Cobrem validação dos formulários, datas e semanas, CRUDs com Room, persistência após reabrir o banco, migração da versão 1 para a 2, filtros da despensa, importação de item comprado e ajuste de ingredientes por porções no planejamento. O APK de debug é gerado em `app/build/outputs/apk/debug/app-debug.apk`.
+Os testes locais usam JUnit, Robolectric e Coroutines Test, sem emulador. Cobrem validação dos formulários, datas e semanas, CRUDs com Room, persistência após reabrir o banco, migrações das versões 1 para 2 e 2 para 3, filtros da despensa, importação de item comprado e ajuste de ingredientes por porções no planejamento. O APK de debug é gerado em `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Arquitetura — View → ViewModel → Repository → DAO → Room
 
@@ -112,7 +114,10 @@ Regras seguidas no projeto:
 - **`RecipeWithIngredients`** (`@Relation`): junta uma receita com seus ingredientes, usada na tela de Detalhes.
 - **`planned_meals`** (`PlannedMealEntity`): id, recipeId (FK → recipes.id, `CASCADE`), dia, tipo de refeição e porções. `PlannedMealWithRecipe` relaciona o planejamento com a receita.
 - **`pantry_items`** (`PantryItemEntity`): id, nome, quantidade, unidade e validade opcional. Datas são armazenadas como dias desde 01/01/1970 (`LocalDate.toEpochDay`), sem horário ou fuso.
-- **Versão 2:** `MIGRATION_1_2` adiciona somente as duas tabelas novas e seus índices, preservando receitas, ingredientes, favoritos e compras existentes. Não há recriação destrutiva do banco.
+- **`collections`** e **`collection_recipes`**: coleções e relação com receitas. Excluir uma coleção preserva suas receitas.
+- **`journal_entries`**: registros de preparo com data, porções, nota e observações. Excluir uma receita mantém o registro histórico com `recipeId` nulo.
+- **Versão 2:** `MIGRATION_1_2` adiciona planejamento e despensa sem recriar o banco.
+- **Versão 3:** `MIGRATION_2_3` adiciona coleções e diário, preservando os dados anteriores.
 - `Converters.kt` traduz `List<String>` (passos) e os enums `RecipeCategory`/`RecipeDifficulty`/`MealType` para `String` e volta.
 - `exportSchema = true`, schema histórico salvo em `app/schemas/`.
 

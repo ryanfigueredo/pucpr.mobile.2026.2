@@ -3,10 +3,15 @@ package br.pucpr.cookbook.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import br.pucpr.cookbook.data.local.dao.CollectionDao
+import br.pucpr.cookbook.data.local.dao.JournalDao
 import br.pucpr.cookbook.data.local.dao.PantryDao
 import br.pucpr.cookbook.data.local.dao.PlannerDao
 import br.pucpr.cookbook.data.local.dao.RecipeDao
 import br.pucpr.cookbook.data.local.dao.ShoppingDao
+import br.pucpr.cookbook.data.local.entity.CollectionEntity
+import br.pucpr.cookbook.data.local.entity.CollectionRecipeEntity
+import br.pucpr.cookbook.data.local.entity.JournalEntryEntity
 import br.pucpr.cookbook.data.local.entity.IngredientEntity
 import br.pucpr.cookbook.data.local.entity.PantryItemEntity
 import br.pucpr.cookbook.data.local.entity.PlannedMealEntity
@@ -19,8 +24,9 @@ import br.pucpr.cookbook.data.local.entity.ShoppingItemEntity
     entities = [
         RecipeEntity::class, IngredientEntity::class, ShoppingItemEntity::class,
         PlannedMealEntity::class, PantryItemEntity::class,
+        CollectionEntity::class, CollectionRecipeEntity::class, JournalEntryEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -29,4 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun shoppingDao(): ShoppingDao
     abstract fun plannerDao(): PlannerDao
     abstract fun pantryDao(): PantryDao
+    abstract fun collectionDao(): CollectionDao
+    abstract fun journalDao(): JournalDao
 }

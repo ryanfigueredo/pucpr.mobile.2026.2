@@ -5,10 +5,15 @@ import android.content.Context
 import androidx.room.Room
 import br.pucpr.cookbook.data.local.AppDatabase
 import br.pucpr.cookbook.data.local.MIGRATION_1_2
+import br.pucpr.cookbook.data.local.MIGRATION_2_3
+import br.pucpr.cookbook.data.local.entity.CollectionEntity
+import br.pucpr.cookbook.data.local.entity.JournalEntryEntity
 import br.pucpr.cookbook.data.local.entity.MealType
 import br.pucpr.cookbook.data.local.entity.PantryItemEntity
 import br.pucpr.cookbook.data.local.entity.PlannedMealEntity
 import br.pucpr.cookbook.data.local.entity.RecipeEntity
+import br.pucpr.cookbook.data.repository.CollectionRepositoryImpl
+import br.pucpr.cookbook.data.repository.JournalRepositoryImpl
 import br.pucpr.cookbook.data.repository.PantryRepositoryImpl
 import br.pucpr.cookbook.data.repository.PlannerRepositoryImpl
 import kotlinx.coroutines.flow.first
@@ -102,7 +107,7 @@ class DatabaseTest {
         }
         database.close()
         database = Room.databaseBuilder(context, AppDatabase::class.java, "migration-test.db")
-            .addMigrations(MIGRATION_1_2).allowMainThreadQueries().build()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3).allowMainThreadQueries().build()
         val recipe = checkNotNull(database.recipeDao().observeRecipeWithIngredients(1).first())
         assertEquals("Sopa", recipe.recipe.nome)
         assertTrue(recipe.recipe.favorita)
@@ -115,9 +120,74 @@ class DatabaseTest {
         database.pantryDao().insert(PantryItemEntity(nome = "Feijão", quantidade = 1.0, unidade = "kg"))
         database.close()
         database = Room.databaseBuilder(context, AppDatabase::class.java, "migration-test.db")
-            .addMigrations(MIGRATION_1_2).allowMainThreadQueries().build()
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3).allowMainThreadQueries().build()
         assertEquals(1, database.plannerDao().observeWeek(21000, 21006).first().size)
         assertEquals("Feijão", database.pantryDao().observeAll().first().single().nome)
         assertEquals(1, database.recipeDao().count())
+    }
+    @Test
+    fun collectionsCrudKeepsRecipesAndUpdatesMembership() = runTest {
+        val first = database.recipeDao().insertRecipe(RecipeEntity(nome = "Sopa"))
+        val second = database.recipeDao().insertRecipe(RecipeEntity(nome = "Bolo"))
+        val repository = CollectionRepositoryImpl(database.collectionDao(), database)
+        repository.save(CollectionEntity(nome = "Favoritas"), setOf(first, second))
+        val created = repository.observeAll().first().single()
+        assertEquals(setOf(first, second), created.recipes.map { it.id }.toSet())
+        repository.save(created.collection.copy(nome = "Para domingo"), setOf(second))
+        val updated = repository.observeAll().first().single()
+        assertEquals("Para domingo", updated.collection.nome)
+        assertEquals(listOf(second), updated.recipes.map { it.id })
+        repository.delete(updated.collection)
+        assertTrue(repository.observeAll().first().isEmpty())
+        assertEquals(2, database.recipeDao().count())
+    }
+
+    @Test
+    fun journalCrudRetainsHistoryAfterRecipeDeletion() = runTest {
+        val recipeId = database.recipeDao().insertRecipe(RecipeEntity(nome = "Sopa"))
+        val repository = JournalRepositoryImpl(database.journalDao())
+        repository.save(JournalEntryEntity(recipeId = recipeId, dia = 21000, porcoes = 2, nota = 4))
+        val created = repository.observeAll().first().single()
+        assertEquals(recipeId, created.recipeId)
+        repository.save(created.copy(dia = 21001, porcoes = 3, nota = 5, observacoes = "Gostei"))
+        val updated = repository.observeAll().first().single()
+        assertEquals(21001L, updated.dia)
+        assertEquals(3, updated.porcoes)
+        assertEquals("Gostei", updated.observacoes)
+        database.recipeDao().deleteRecipe(RecipeEntity(id = recipeId))
+        val preserved = repository.observeAll().first().single()
+        assertNull(preserved.recipeId)
+        repository.delete(preserved)
+        assertTrue(repository.observeAll().first().isEmpty())
+    }
+
+    @Test
+    fun migrationFromVersionTwoAddsCollectionsAndJournalWithoutLosingRecipes() = runTest {
+        val schema = checkNotNull(javaClass.classLoader!!.getResourceAsStream("br.pucpr.cookbook.data.local.AppDatabase/2.json"))
+            .bufferedReader().use { JSONObject(it.readText()).getJSONObject("database") }
+        context.openOrCreateDatabase("migration-test.db", Context.MODE_PRIVATE, null).use { old ->
+            val entities = schema.getJSONArray("entities")
+            for (index in 0 until entities.length()) {
+                val entity = entities.getJSONObject(index)
+                old.execSQL(entity.getString("createSql").replace("\${TABLE_NAME}", entity.getString("tableName")))
+                val indices = entity.optJSONArray("indices") ?: continue
+                for (i in 0 until indices.length()) {
+                    old.execSQL(indices.getJSONObject(i).getString("createSql").replace("\${TABLE_NAME}", entity.getString("tableName")))
+                }
+            }
+            val setup = schema.getJSONArray("setupQueries")
+            for (index in 0 until setup.length()) old.execSQL(setup.getString(index))
+            old.execSQL("INSERT INTO recipes VALUES (1, 'Sopa', 'Caseira', 'VEGETARIANO', 30, 'FACIL', 2, 'Cozinhar', '', 1, 1, 123)")
+            old.version = 2
+        }
+        database.close()
+        database = Room.databaseBuilder(context, AppDatabase::class.java, "migration-test.db")
+            .addMigrations(MIGRATION_2_3).allowMainThreadQueries().build()
+        assertEquals("Sopa", database.recipeDao().observeRecipeWithIngredients(1).first()?.recipe?.nome)
+        val collections = CollectionRepositoryImpl(database.collectionDao(), database)
+        collections.save(CollectionEntity(nome = "Testada"), setOf(1))
+        assertEquals(1, collections.observeAll().first().single().recipes.size)
+        JournalRepositoryImpl(database.journalDao()).save(JournalEntryEntity(recipeId = 1, dia = 21000, porcoes = 2, nota = 5))
+        assertEquals(1, database.journalDao().observeAll().first().size)
     }
 }

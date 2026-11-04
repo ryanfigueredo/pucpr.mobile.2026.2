@@ -97,6 +97,7 @@ private class TimerActions(
 fun CookingModeScreen(
     onBack: () -> Unit,
     onGoHome: () -> Unit,
+    onRegister: (Long, Int) -> Unit,
     viewModel: CookingModeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -104,6 +105,7 @@ fun CookingModeScreen(
         uiState = uiState,
         onBack = onBack,
         onGoHome = onGoHome,
+        onRegister = onRegister,
         onPrevious = viewModel::onPreviousStep,
         onNext = viewModel::onNextStep,
         onFinish = viewModel::onFinishRecipe,
@@ -126,6 +128,7 @@ private fun CookingModeContent(
     uiState: CookingUiState,
     onBack: () -> Unit,
     onGoHome: () -> Unit,
+    onRegister: (Long, Int) -> Unit,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
     onFinish: () -> Unit,
@@ -155,7 +158,7 @@ private fun CookingModeContent(
                 actionLabel = "Voltar",
                 onAction = onBack,
             )
-            uiState.finished -> FinishedContent(recipe.nome, onBack, onGoHome, modifier)
+            uiState.finished -> FinishedContent(recipe.nome, recipe.id, uiState.porcoes, onBack, onGoHome, onRegister, modifier)
             uiState.steps.isEmpty() -> EmptyState(
                 icon = Icons.Filled.Restaurant,
                 title = "Receita sem etapas",
@@ -458,8 +461,11 @@ private fun CookingBottomBar(
 @Composable
 private fun FinishedContent(
     nomeReceita: String,
+    recipeId: Long,
+    porcoes: Int,
     onBack: () -> Unit,
     onGoHome: () -> Unit,
+    onRegister: (Long, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -490,6 +496,12 @@ private fun FinishedContent(
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
+            onClick = { onRegister(recipeId, porcoes) },
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) { Text("Registrar no diário") }
+        Spacer(modifier = Modifier.height(12.dp))
+        OutlinedButton(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth().height(52.dp),
             shape = RoundedCornerShape(16.dp),
@@ -581,6 +593,7 @@ private fun CookingModePreview() {
             ),
             onBack = {},
             onGoHome = {},
+            onRegister = { _, _ -> },
             onPrevious = {},
             onNext = {},
             onFinish = {},
