@@ -14,7 +14,7 @@ Pacote: `br.pucpr.cookbook`
 
 ## Descrição
 
-O CookBook tem 7 telas. As cinco originais continuam com a divisão da equipe:
+O CookBook tem 8 telas. As cinco originais continuam com a divisão da equipe:
 
 1. **Início** — busca, categorias, destaques e receitas recentes.
 2. **Explorar Receitas** — listagem completa com busca e filtros, cadastro de novas receitas.
@@ -23,6 +23,7 @@ O CookBook tem 7 telas. As cinco originais continuam com a divisão da equipe:
 5. **Lista de Compras** — itens agrupados por receita de origem, com checkbox de comprado, item manual e limpeza da lista. Itens comprados podem preencher o formulário da despensa.
 6. **Planejamento semanal** — CRUD de refeições com receita, data, tipo e porções; navegação entre semanas, acesso à receita e envio de ingredientes para compras com as quantidades ajustadas.
 7. **Minha despensa** — CRUD de alimentos com nome, quantidade, unidade e validade opcional; busca e filtro de vencidos ou que vencem nos próximos 7 dias.
+8. **Modo Cozinha** — preparo de receitas passo a passo, navegação entre etapas, barra de progresso, temporizador, consulta de ingredientes, ajuste de porções e finalização da receita.
 
 As novas telas são acessadas pelos atalhos em **Início → Minha cozinha**, mantendo a barra inferior atual. Cadastro e edição usam painéis (`ModalBottomSheet`), seguindo o formulário de receitas. Excluir uma receita remove também suas refeições planejadas. Os alimentos da despensa são independentes das receitas.
 
