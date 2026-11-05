@@ -34,6 +34,13 @@ import br.pucpr.cookbook.ui.screens.login.LoginScreen
 import br.pucpr.cookbook.ui.screens.pantry.PantryScreen
 import br.pucpr.cookbook.ui.screens.planner.PlannerScreen
 import br.pucpr.cookbook.ui.screens.shopping.ShoppingScreen
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 
 private data class BottomDestination(val route: String, val label: String, val icon: ImageVector)
 
@@ -46,6 +53,8 @@ private val bottomDestinations = listOf(
 
 @Composable
 fun CookBookNavHost(
+    isDark: Boolean,
+    onToggleTheme: () -> Unit,
     startDestination: String = Routes.LOGIN,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -79,11 +88,16 @@ fun CookBookNavHost(
             }
         },
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier.padding(innerPadding),
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
         ) {
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                modifier = Modifier.fillMaxSize(),
+            ) {
             // LOGIN é a porta de entrada quando não há sessão. Ao autenticar,
             // substitui a si mesmo na backstack para o usuário não "voltar" ao login.
             composable(Routes.LOGIN) {
@@ -199,14 +213,29 @@ fun CookBookNavHost(
                     onOpenRecipe = { id -> navController.navigate(Routes.details(id)) },
                 )
             }
-            composable(
-                route = Routes.PANTRY,
-                arguments = listOf(navArgument("shoppingItemId") {
-                    type = NavType.LongType
-                    defaultValue = 0L
-                }),
-            ) {
-                PantryScreen(onBack = { navController.popBackStack() })
+                composable(
+                    route = Routes.PANTRY,
+                    arguments = listOf(navArgument("shoppingItemId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    }),
+                ) {
+                    PantryScreen(onBack = { navController.popBackStack() })
+                }
+            }
+
+            if (showBottomBar) {
+                SmallFloatingActionButton(
+                    onClick = onToggleTheme,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp),
+                ) {
+                    Icon(
+                        imageVector = if (isDark) Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                        contentDescription = if (isDark) "Ativar modo claro" else "Ativar modo escuro",
+                    )
+                }
             }
         }
     }

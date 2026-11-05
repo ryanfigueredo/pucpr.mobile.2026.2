@@ -16,6 +16,7 @@ room = "2.8.5"
 hilt = "2.60.1"
 hiltNavigationCompose = "1.4.0"
 googleServices = "4.5.0"
+datastore = "1.1.7"
 # 33.7.0 traz firebase-auth 23.x, compatível com Kotlin 2.2.
 # Versões mais novas (BoM 34/35) exigem Kotlin 2.4+.
 firebaseBom = "33.7.0"
@@ -36,6 +37,7 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version = "1.1.7" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
