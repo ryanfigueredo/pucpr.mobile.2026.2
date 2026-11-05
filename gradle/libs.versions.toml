@@ -16,6 +16,7 @@ room = "2.8.5"
 hilt = "2.60.1"
 hiltNavigationCompose = "1.4.0"
 googleServices = "4.5.0"
+datastore = "1.1.7"
 # 33.7.0 traz firebase-auth 23.x, compatível com Kotlin 2.2.
 # Versões mais novas (BoM 34/35) exigem Kotlin 2.4+.
 firebaseBom = "33.7.0"
