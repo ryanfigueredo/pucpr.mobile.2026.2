@@ -10,6 +10,9 @@ object Routes {
     const val HOME = "home"
     const val EXPLORE_BASE = "explore"
     const val EXPLORE = "$EXPLORE_BASE?termo={termo}&categoria={categoria}"
+
+    fun explore(termo: String = "", categoria: String = "") =
+        "$EXPLORE_BASE?termo=$termo&categoria=$categoria"
     const val DETAILS = "details/{recipeId}"
     const val FAVORITES = "favorites"
     const val SHOPPING = "shopping"
