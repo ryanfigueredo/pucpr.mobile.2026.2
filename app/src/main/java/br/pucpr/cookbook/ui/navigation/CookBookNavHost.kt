@@ -71,7 +71,8 @@ fun CookBookNavHost(
                             selected = currentRoute == destination.route,
                             onClick = {
                                 if (currentRoute != destination.route) {
-                                    navController.navigate(destination.route) {
+                                    val target = if (destination.route == Routes.EXPLORE) Routes.explore() else destination.route
+                                    navController.navigate(target) {
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
                                         }
