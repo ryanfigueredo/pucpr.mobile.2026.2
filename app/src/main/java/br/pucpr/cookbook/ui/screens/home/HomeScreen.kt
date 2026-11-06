@@ -156,7 +156,7 @@ private fun HomeScreenContent(
                     value = termoBusca,
                     onValueChange = { termoBusca = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Buscar receitas") },
+                    label = { Text("Nome da receita") },
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
